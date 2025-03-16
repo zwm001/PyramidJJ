@@ -17,3 +17,6 @@
 ### [Python爬虫写法参考](https://github.com/JJBJJ/PyramidStore/blob/main/spider.md)
 
 ### [影视版源码地址](https://github.com/FongMi/TV/tree/release/pyramid)
+
+### 问题反馈
+问题请反馈到[telegram](https://t.me/+A3SLQRmPVi9kOThl)
