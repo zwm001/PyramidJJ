@@ -8,7 +8,8 @@
 
 ## 食用方法
 
-推荐使用ok影视
+推荐：ok影视
+开袋即食：不需要挂载任何jar！不需要挂载任何jar！不需要挂载任何jar！！！
 
 配置文件sites添加内容参考 [example.json](https://github.com/JJBJJ/PyramidStore/blob/main/example.json)
 
