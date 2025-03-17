@@ -16,7 +16,7 @@ class Spider(Spider):
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 1,
-            "api": "./py/appV2.py",
+            "api": "./py/APPV2.py",
             "ext": "http://cmsyt.lyyytv.cn"
         }
         
