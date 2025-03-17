@@ -168,12 +168,6 @@ class Spider(Spider):
                 data2 = self.fetch(f"{self.host}/api/v1/movie_addr/parse_url?pack={bba[0]}&signature={bba[1]}",
                                    headers=self.header()).json()['data']
                 url = data2.get('play_url') or data2.get('download_url')
-                try:
-                    url1 = self.fetch(url, headers=self.header(), allow_redirects=False).headers['Location']
-                    if url1 and "http" in url1:
-                        url = url1
-                except:
-                    pass
             except Exception as e:
                 pass
         if re.search(r'\.jpg|\.png|\.jpeg', url):
