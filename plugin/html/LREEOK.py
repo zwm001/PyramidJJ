@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # by @嗷呜
+# 温馨提示：官方APP数据是错误的，你们可以给官方反馈，然后就可以写APP
 import re
 import sys
 from Crypto.Hash import MD5
