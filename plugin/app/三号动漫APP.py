@@ -87,10 +87,7 @@ class Spider(Spider):
         plist,names = [],[]
         for i in vod['play_url_list']:
             names.append(i['show'])
-            a=[]
-            for j in i['urls']:
-                a.append(f"{j['name']}${i['from']}@@{j['url']}")
-            plist.append('#'.join(a))
+            plist.append('#'.join([f"{j['name']}${i['from']}@@{j['url']}" for j in i['urls']]))
         vod.pop('play_url_list', None)
         vod.update({'vod_play_from': '$$$'.join(names), 'vod_play_url': '$$$'.join(plist)})
         return {'list':[vod]}
