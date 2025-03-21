@@ -105,7 +105,7 @@ class Spider(Spider):
 
     def playerContent(self, flag, id, vipFlags):
         return {'parse': 0, 'url': id,
-                'header': {'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 11; M2012K10C Build/RP1A.200720.011)'}}
+                'header': {'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 11; M2012K10C Build/RP1A.200720.011)','Referer':'https://rysp.tv'}}
 
     def localProxy(self, param):
         pass
