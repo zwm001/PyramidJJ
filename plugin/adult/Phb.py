@@ -131,10 +131,9 @@ class Spider(Spider):
             vdata = []
             for i in vhtml.items():
                 vdata.append({
-                    # f"{self.getProxyUrl()}&url={self.e64(i('img').attr('src'))}&type=img"
                     'vod_id': 'playlists_click_' + i('.thumbnail-info-wrapper .display-block a').attr('href'),
                     'vod_name': i('.thumbnail-info-wrapper .display-block a').attr('title'),
-                    'vod_pic': self.proxies(i('.largeThumb').attr('src')),
+                    'vod_pic': self.proxy(i('.largeThumb').attr('src')),
                     'vod_tag': 'folder',
                     'vod_remarks': i('.playlist-videos .number').text(),
                     'style': {"type": "rect", "ratio": 1.33}
@@ -147,7 +146,7 @@ class Spider(Spider):
                 vdata.append({
                     'vod_id': 'director_click_' + i('.avatar a').attr('href'),
                     'vod_name': i('.avatar img').attr('alt'),
-                    'vod_pic': self.proxies(i('.avatar img').attr('src')),
+                    'vod_pic': self.proxy(i('.avatar img').attr('src')),
                     'vod_tag': 'folder',
                     'vod_remarks': i('.descriptionContainer ul li').eq(-1).text(),
                     'style': {"type": "rect", "ratio": 1.33}
@@ -161,7 +160,7 @@ class Spider(Spider):
                 vdata.append({
                     'vod_id': i('a').attr('href') + '_this_video',
                     'vod_name': i('a').attr('alt'),
-                    'vod_pic': self.proxies(i('a img').attr('src')),
+                    'vod_pic': self.proxy(i('a img').attr('src')),
                     'vod_tag': 'folder',
                     'style': {"type": "rect", "ratio": 1.33}
                 })
@@ -173,7 +172,7 @@ class Spider(Spider):
                 vdata.append({
                     'vod_id': 'pornstars_click_' + i('a').attr('href'),
                     'vod_name': i('.performerCardName').text(),
-                    'vod_pic': self.proxies(i('a img').attr('src')),
+                    'vod_pic': self.proxy(i('a img').attr('src')),
                     'vod_tag': 'folder',
                     'vod_year': i('.performerVideosViewsCount span').eq(0).text(),
                     'vod_remarks': i('.performerVideosViewsCount span').eq(-1).text(),
