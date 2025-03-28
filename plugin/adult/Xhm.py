@@ -33,8 +33,8 @@ class Spider(Spider):
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
             'priority': 'u=1, i',
         }
-        self.session = Session()
         self.host = self.gethost()
+        self.session = Session()
         self.headers.update({'origin': self.host,'referer': f'{self.host}/'})
         self.session.proxies.update(self.proxies)
         self.session.headers.update(self.headers)
@@ -208,7 +208,7 @@ class Spider(Spider):
 
     def gethost(self):
         try:
-            response = self.session.get('https://xhamster.com',headers=self.headers,allow_redirects=False)
+            response = requests.get('https://xhamster.com',proxies=self.proxies,headers=self.headers,allow_redirects=False)
             return response.headers['Location']
         except Exception as e:
             print(f"获取主页失败: {str(e)}")
