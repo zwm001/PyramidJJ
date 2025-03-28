@@ -32,12 +32,7 @@ class Spider(Spider):
         '''
         try:self.proxies = json.loads(extend)
         except:self.proxies = {}
-        self.host = self.gethost()
-        self.headers['referer'] = f'{self.host}/'
-        self.session = Session()
-        self.session.proxies.update(self.proxies)
-        self.session.headers.update(self.headers)
-        self.pheaders = {
+        self.headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5410.0 Safari/537.36',
             'pragma': 'no-cache',
             'cache-control': 'no-cache',
@@ -45,14 +40,17 @@ class Spider(Spider):
             'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
             'dnt': '1',
             'sec-ch-ua-mobile': '?0',
-            'origin': self.host,
             'sec-fetch-site': 'cross-site',
             'sec-fetch-mode': 'cors',
             'sec-fetch-dest': 'empty',
-            'referer': f'{self.host}/',
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
             'priority': 'u=1, i',
         }
+        self.host = self.gethost()
+        self.headers.update({'referer': f'{self.host}/', 'origin': self.host})
+        self.session = Session()
+        self.session.proxies.update(self.proxies)
+        self.session.headers.update(self.headers)
         pass
 
     def getName(self):
@@ -66,27 +64,6 @@ class Spider(Spider):
 
     def destroy(self):
         pass
-
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-        'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-full-version': '"133.0.6943.98"',
-        'sec-ch-ua-arch': '"x86"',
-        'sec-ch-ua-platform': '"Windows"',
-        'sec-ch-ua-platform-version': '"19.0.0"',
-        'sec-ch-ua-model': '""',
-        'sec-ch-ua-full-version-list': '"Not(A:Brand";v="99.0.0.0", "Google Chrome";v="133.0.6943.98", "Chromium";v="133.0.6943.98"',
-        'dnt': '1',
-        'upgrade-insecure-requests': '1',
-        'sec-fetch-site': 'none',
-        'sec-fetch-mode': 'navigate',
-        'sec-fetch-user': '?1',
-        'sec-fetch-dest': 'document',
-        'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
-        'priority': 'u=0, i'
-    }
 
     def homeContent(self, filter):
         result = {}
@@ -238,34 +215,28 @@ class Spider(Spider):
     def playerContent(self, flag, id, vipFlags):
         ids = self.d64(id).split('@@@@')
         if '.m3u8' in ids[1]: ids[1] = self.proxy(ids[1], 'm3u8')
-        return {'parse': int(ids[0]), 'url': ids[1], 'header': self.pheaders}
+        return {'parse': int(ids[0]), 'url': ids[1], 'header': self.headers}
 
     def localProxy(self, param):
         url = self.d64(param.get('url'))
-        if param.get('type') == 'img':
-            return self.imProxy(url)
-        elif param.get('type') == 'm3u8':
+        if param.get('type') == 'm3u8':
             return self.m3Proxy(url)
         else:
             return self.tsProxy(url)
 
-    def imProxy(self, url):
-        data = requests.get(url, headers=self.headers, proxies=self.proxies)
-        return [200, data.headers['Content-Type'], data.content]
-
     def m3Proxy(self, url):
-        ydata = requests.get(url, headers=self.pheaders, proxies=self.proxies, allow_redirects=False)
+        ydata = requests.get(url, headers=self.headers, proxies=self.proxies, allow_redirects=False)
         data = ydata.content.decode('utf-8')
         if ydata.headers.get('Location'):
             url = ydata.headers['Location']
-            data = requests.get(url, headers=self.pheaders, proxies=self.proxies).content.decode('utf-8')
+            data = requests.get(url, headers=self.headers, proxies=self.proxies).content.decode('utf-8')
         lines = data.strip().split('\n')
         last_r = url[:url.rfind('/')]
         if len(lines) < 10:
             filtered = [item for item in lines if '#EXT' not in item and item.strip()]
             if len(filtered) == 1:
                 u = last_r + ('' if filtered[0].startswith('/') else '/') + filtered[0]
-                data = requests.get(u, headers=self.pheaders, proxies=self.proxies).content.decode('utf-8')
+                data = requests.get(u, headers=self.headers, proxies=self.proxies).content.decode('utf-8')
                 lines = data.strip().split('\n')
         for index, string in enumerate(lines):
             if '#EXT' not in string and 'http' not in string:
@@ -275,7 +246,7 @@ class Spider(Spider):
         return [200, "application/vnd.apple.mpegur", data]
 
     def tsProxy(self, url):
-        data = requests.get(url, headers=self.pheaders, proxies=self.proxies, stream=True)
+        data = requests.get(url, headers=self.headers, proxies=self.proxies, stream=True)
         return [200, data.headers['Content-Type'], data.content]
 
     def gethost(self):
