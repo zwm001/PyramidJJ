@@ -266,12 +266,15 @@ class Spider(Spider):
             url = ydata.headers['Location']
             data = requests.get(url, headers=self.headers, proxies=self.proxies).content.decode('utf-8')
         lines = data.strip().split('\n')
+        last_r = url[:url.rfind('/')]
         parsed_url = urlparse(url)
         durl = parsed_url.scheme + "://" + parsed_url.netloc
         for index, string in enumerate(lines):
-            if '#EXT' not in string and 'http' not in string:
-                line = durl + ('' if string.startswith('/') else '/') + string
-                lines[index] = self.proxy(line, string.split('.')[-1])
+            if '#EXT' not in string:
+                if 'http' not in string:
+                    domain = last_r if string.count('/') < 2 else durl
+                    string = domain + ('' if string.startswith('/') else '/') + string
+                lines[index] = self.proxy(string, string.split('.')[-1].split('?')[0])
         data = '\n'.join(lines)
         return [200, "application/vnd.apple.mpegur", data]
 
