@@ -143,7 +143,8 @@ class Spider(Spider):
                 'vod_name': i('img').attr('alt'),
                 'vod_pic': self.proxy(i('img').attr('data-original')),
                 'vod_year': i('.pic-tag-t').text(),
-                'vod_remarks': i('.pic-tag-b').text()
+                'vod_remarks': i('.pic-tag-b').text(),
+                'style': {"type": "rect", "ratio": 1.33}
             })
         return videos
 
