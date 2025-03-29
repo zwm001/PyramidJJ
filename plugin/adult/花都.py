@@ -133,7 +133,7 @@ class Spider(Spider):
         }
         self.headers.update({'referer': 'https://a.hdys.top/'})
         response = self.session.get('https://a.hdys.top/assets/js/config.js', params=params, headers=self.headers)
-        return self.host_late(response.text.split(';')[:-3])
+        return self.host_late(response.text.split(';')[:-4])
 
     def getlist(self,data):
         videos=[]
