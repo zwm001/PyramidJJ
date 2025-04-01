@@ -18,7 +18,7 @@ class Spider(Spider):
 
     def init(self, extend=""):
         self.did = self.getdid()
-        self.token,self.host = self.gettoken()
+        self.token,self.phost,self.host = self.gettoken()
         pass
 
     def isVideoFormat(self, url):
@@ -89,11 +89,10 @@ class Spider(Spider):
         result = {}
         videos = []
         for k in data1:
-            img = 'https://dg2ordyr4k5v3.cloudfront.net/' + k.get('coverImg')[0]
             id = f'{k.get("videoId")}?{k.get("userId")}?{k.get("nickName")}'
             if 'click' in tid:
                 id = id + 'click'
-            videos.append({"vod_id": id, 'vod_name': k.get('title'), 'vod_pic': self.getProxyUrl() + '&url=' + img,
+            videos.append({"vod_id": id, 'vod_name': k.get('title'), 'vod_pic': self.getProxyUrl() + f"&url={k.get('coverImg')[0]}",
                            'vod_remarks': self.dtim(k.get('playTime')),'style': {"type": "rect", "ratio": 1.33}})
         result["list"] = videos
         result["page"] = pg
@@ -121,9 +120,8 @@ class Spider(Spider):
         result = {}
         videos = []
         for k in data1:
-            img = 'https://dg2ordyr4k5v3.cloudfront.net/' + k.get('coverImg')[0]
             id = f'{k.get("videoId")}?{k.get("userId")}?{k.get("nickName")}'
-            videos.append({"vod_id": id, 'vod_name': k.get('title'), 'vod_pic': self.getProxyUrl() + '&url=' + img,
+            videos.append({"vod_id": id, 'vod_name': k.get('title'), 'vod_pic': self.getProxyUrl() + f"&url={k.get('coverImg')[0]}",
                            'vod_remarks': self.dtim(k.get('playTime')), 'style': {"type": "rect", "ratio": 1.33}})
         result["list"] = videos
         result["page"] = pg
@@ -195,8 +193,8 @@ class Spider(Spider):
             }
             response = self.post(url, json=data, headers=headers)
             response.raise_for_status()
-            token = response.json()['data']['token']
-            return token, current_domain
+            data1 = response.json()['data']
+            return data1['token'], data1['imgDomain'], current_domain
         except Exception as e:
             return self.gettoken(i + 1, max_attempts)
 
@@ -216,7 +214,7 @@ class Spider(Spider):
     def imgs(self, param):
         headers = {'User-Agent': self.ua}
         url = param['url']
-        data = self.fetch(url,headers=headers)
+        data = self.fetch(f"{self.phost}{url}",headers=headers)
         bdata = self.img(data.content, 100, '2020-zq3-888')
         return [200, data.headers.get('Content-Type'), bdata]
 
