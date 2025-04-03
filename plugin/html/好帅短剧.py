@@ -51,12 +51,10 @@ class Spider(Spider):
             j = i('a').attr('href')
             if j and 'type' in j:
                 id = j.split('/')[-1].split('.')[0]
-                if id not in classes:
-                    classes.append(id)
-                    classes.append({
-                        'type_name': i('a').text(),
-                        'type_id': id
-                    })
+                classes.append({
+                    'type_name': i('a').text(),
+                    'type_id': id
+                })
         hlist = self.getlist(data('.module-lines-list .module-item'))
         result['class'] = classes
         result['list'] = hlist
