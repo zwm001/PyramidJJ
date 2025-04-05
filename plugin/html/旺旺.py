@@ -86,7 +86,7 @@ class Spider(Spider):
         v = data('.numList ul li').eq(0)('a').attr('href')
         html = self.getpq(v)
         d = html('.detailPosterIntro script').eq(0).text()
-        mac_from = re.search(r"mac_from='(.*?)'", d).group(1)
+        mac_from = re.search(r"mac_from='(.*?)'", d)
         mac_url = re.search(r"mac_url='(.*?)'", d).group(1)
         z = data('.page-bd')
         c = z('.desc_item')
@@ -96,8 +96,8 @@ class Spider(Spider):
             'vod_remarks': c.eq(0)('font').text(),
             'vod_actor': c.eq(1)('a').text(),
             'vod_director': c.eq(2)('a').text(),
-            'vod_content': data('.detail-con p').text(),
-            'vod_play_from': mac_from or '呜呜呜',
+            'vod_content': data('.detail-con p').text().split('：')[-1],
+            'vod_play_from': mac_from.group(1) if mac_from else '呜呜呜',
             'vod_play_url': mac_url
         }
         return {'list': [vod]}
