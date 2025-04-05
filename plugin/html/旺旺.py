@@ -88,7 +88,6 @@ class Spider(Spider):
         d = html('.detailPosterIntro script').eq(0).text()
         mac_from = re.search(r"mac_from='(.*?)'", d).group(1)
         mac_url = re.search(r"mac_url='(.*?)'", d).group(1)
-        mac_url = mac_url.replace('$', f'${mac_from}@')
         z = data('.page-bd')
         c = z('.desc_item')
         vod = {
@@ -97,8 +96,8 @@ class Spider(Spider):
             'vod_remarks': c.eq(0)('font').text(),
             'vod_actor': c.eq(1)('a').text(),
             'vod_director': c.eq(2)('a').text(),
-            'vod_content': data('.detail-con p').text().split('：',1)[-1],
-            'vod_play_from': '一起旺旺',
+            'vod_content': data('.detail-con p').text(),
+            'vod_play_from': mac_from or '呜呜呜',
             'vod_play_url': mac_url
         }
         return {'list': [vod]}
@@ -117,27 +116,24 @@ class Spider(Spider):
         return {'list': video, 'page': pg}
 
     def playerContent(self, flag, id, vipFlags):
-        ids = id.split('@')
         try:
-            if not ids[0]:
-                raise Exception('未找到播放地址')
-            jxdata = self.getpq(f"/player/{ids[0]}.js").html()
+            if flag == '呜呜呜': raise Exception('未找到播放地址')
+            jxdata = self.getpq(f"/player/{flag}.js").html()
             jxurl = re.search(r'http.*?url=', jxdata).group()
-            data = self.fetch(f"{jxurl}{ids[1]}", headers=self.headers).text
+            data = self.fetch(f"{jxurl}{id}", headers=self.headers).text
             matches = re.findall(r'http.*?url=', data)
             if len(matches):
                 url = []
                 for i, x in enumerate(matches):
-                    js = {'jx': x, 'id': ids[1]}
+                    js = {'jx': x, 'id': id}
                     purl = f"{self.getProxyUrl()}&wdict={self.e64(json.dumps(js))}"
                     url.extend([f'线路{i + 1}', purl])
             else:
                 url = re.search(r"url='(.*?)'", data).group(1)
-            if not url:
-                raise Exception('未找到播放地址')
+            if not url: raise Exception('未找到播放地址')
             p = 0
         except:
-            p, url = 1, ids[1]
+            p, url = 1, id
         return {'parse': p, 'url': url, 'header': self.headers}
 
     def localProxy(self, param):
