@@ -97,7 +97,7 @@ class Spider(Spider):
             'vod_remarks': c.eq(0)('font').text(),
             'vod_actor': c.eq(1)('a').text(),
             'vod_director': c.eq(2)('a').text(),
-            'vod_content': data('.detail-con p').text(),
+            'vod_content': data('.detail-con p').text().split('：',1)[-1],
             'vod_play_from': '一起旺旺',
             'vod_play_url': mac_url
         }
