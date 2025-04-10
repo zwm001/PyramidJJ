@@ -150,7 +150,7 @@ class Spider(Spider):
             if id:
                 id = re.search(r'\d+', id).group(0)
                 img = i('img').attr('data-src')
-                if img and 'url=' in img and 'http' in img: img = f'{self.host}{img}'
+                if img and 'url=' in img and 'http' not in img: img = f'{self.host}{img}'
                 videos.append({
                     'vod_id': id,
                     'vod_name': i('img').attr('alt'),
