@@ -16,6 +16,8 @@
 
 开袋即食：不需要挂载任何jar！不需要挂载任何jar！不需要挂载任何jar！！！
 
+## 配置示例
+
 配置文件sites添加内容参考 [example.json](https://github.com/JJBJJ/PyramidStore/blob/main/example.json)
 
 **一定要开启存储权限！一定要开启存储权限！一定要开启存储权限！**
