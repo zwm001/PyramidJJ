@@ -36,7 +36,7 @@ class Spider(Spider):
             'Sec-Fetch-Dest': 'empty',
             'Accept-Language': 'zh-CN,zh;q=0.9',
         }
-        self.host=self.host_late(self.get_domains())
+        self.host=self.host_late(self.gethosts())
         self.headers.update({'Origin': self.host, 'Referer': f"{self.host}/"})
         pass
 
@@ -174,29 +174,70 @@ class Spider(Spider):
             print(f"Base64解码错误: {str(e)}")
             return ""
 
-    def get_domains(self):
-        html = self.getpq(requests.get("https://51cg.fun", headers=self.headers,proxies=self.proxies).text)
-        html_pattern = r"Base64\.decode\('([^']+)'\)"
-        html_match = re.search(html_pattern, html('script').eq(-1).text(), re.DOTALL)
-        if not html_match:
-            raise Exception("未找到html")
-        html = b64decode(html_match.group(1)).decode()
-        words_pattern = r"words\s*=\s*'([^']+)'"
-        words_match = re.search(words_pattern, html, re.DOTALL)
-        if not words_match:
-            raise Exception("未找到words")
-        words = words_match.group(1).split(',')
-        main_pattern = r"lineAry\s*=.*?words\.random\(\)\s*\+\s*'\.([^']+)'"
-        domain_match = re.search(main_pattern, html, re.DOTALL)
-        if not domain_match:
-            raise Exception("未找到主域名")
-        domain_suffix = domain_match.group(1)
-        domains = []
-        for _ in range(3):
-            random_word = random.choice(words)
-            domain = f"https://{random_word}.{domain_suffix}"
-            domains.append(domain)
-        return domains
+    def gethosts(self):
+        try:
+            html = self.getpq(requests.get("https://51cg.fun", headers=self.headers, proxies=self.proxies).text)
+            html_pattern = r"Base64\.decode\('([^']+)'\)"
+            html_match = re.search(html_pattern, html('script').eq(-1).text(), re.DOTALL)
+            if not html_match: raise Exception("未找到html")
+            html = self.getpq(b64decode(html_match.group(1)).decode())('script').eq(-4).text()
+            return self.hstr(html)
+        except Exception as e:
+            self.log(f"获取: {str(e)}")
+            return ""
+
+    def hstr(self, html):
+        pattern = r"(backupLine\s*=\s*\[\])\s+(words\s*=)"
+        replacement = r"\1, \2"
+        html = re.sub(pattern, replacement, html)
+        data = f"""
+        var Vx = {{
+            range: function(start, end) {{
+                const result = [];
+                for (let i = start; i < end; i++) {{
+                    result.push(i);
+                }}
+                return result;
+            }},
+
+            map: function(array, callback) {{
+                const result = [];
+                for (let i = 0; i < array.length; i++) {{
+                    result.push(callback(array[i], i, array));
+                }}
+                return result;
+            }}
+        }};
+
+        Array.prototype.random = function() {{
+            return this[Math.floor(Math.random() * this.length)];
+        }};
+
+        var location = {{
+            protocol: "https:"
+        }};
+
+        function executeAndGetResults() {{
+            var allLines = lineAry.concat(backupLine);
+            var resultStr = JSON.stringify(allLines);
+            return resultStr;
+        }};
+        {html}
+        executeAndGetResults();
+        """
+        return self.p_qjs(data)
+
+    def p_qjs(self, js_code):
+        try:
+            from com.whl.quickjs.wrapper import QuickJSContext
+            ctx = QuickJSContext.create()
+            result_json = ctx.evaluate(js_code)
+            ctx.destroy()
+            return json.loads(result_json)
+
+        except Exception as e:
+            self.log(f"执行失败: {e}")
+            return []
 
     def host_late(self, url_list):
         if isinstance(url_list, str):
@@ -213,7 +254,7 @@ class Spider(Spider):
         def test_host(url):
             try:
                 start_time = time.time()
-                response = requests.head(url,proxies=self.proxies,timeout=1.0, allow_redirects=False)
+                response = requests.head(url,headers=self.headers,proxies=self.proxies,timeout=1.0, allow_redirects=False)
                 delay = (time.time() - start_time) * 1000
                 results[url] = delay
             except Exception as e:
