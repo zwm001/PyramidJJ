@@ -1,6 +1,5 @@
 import re
 import sys
-from pprint import pprint
 from Crypto.Hash import MD5
 sys.path.append("..")
 from Crypto.Cipher import AES
