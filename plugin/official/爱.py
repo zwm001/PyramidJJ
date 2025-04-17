@@ -199,6 +199,7 @@ class Spider(Spider):
         return {'list':videos,'page':pg}
 
     def playerContent(self, flag, id, vipFlags):
+        id=id.replace('http://m.','https://www.')
         return  {'jx':1,'parse': 1, 'url': id, 'header': ''}
 
     def localProxy(self, param):
