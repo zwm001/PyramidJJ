@@ -108,8 +108,8 @@ class Spider(Spider):
         for i,x in enumerate(nd):
             n.append(x.text())
             p.append('#'.join([f"{j.text()}${j('a').attr('href')}" for j in pd[i]('li').items()]))
-        vod['vod_play_url']='$$$'.join(n)
-        vod['vod_play_from']='$$$'.join(p)
+        vod['vod_play_url']='$$$'.join(p)
+        vod['vod_play_from']='$$$'.join(n)
         return {'list':[vod]}
 
     def searchContent(self, key, quick, pg="1"):
