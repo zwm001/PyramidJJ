@@ -12,7 +12,7 @@ from base.spider import Spider
 class Spider(Spider):
 
     def init(self, extend=""):
-        self.did = 'a31c06b64c2a1395cdac70bb9d1eb031'
+        self.did = 'f8da348e186e6ee574d647918f5a7114'
         pass
 
     def getName(self):
@@ -98,7 +98,7 @@ class Spider(Spider):
                         new_data[k] += "," + v
                     else:
                         new_data[k] = v
-        path=f'/portal/lw/videolib/data?uid=&passport_id=&ret_num=60&version=13.014.21150&device_id={self.did}&channel_id={tid}&page_id={pg}&session={self.sid}&os=&conduit_id=&vip=0&auth&recent_selected_tag=&ad=%5B%7B%22lm%22:%225%22,%22ai%22:%225%22,%22fp%22:%226%22,%22sei%22:%22Sa867aa9d326e2bd8654d8c2a8636055e%22,%22position%22:%22library%22%7D%5D&adExt=%7B%22r%22:%221.2.1-ares6-pure%22%7D&dfp=a12f96215b2f7842a98c082799ca0c3d9236be00946701b106829754d8ece3aaf8&filter={quote(json.dumps(new_data))}'
+        path=f"/portal/lw/videolib/data?uid=&passport_id=&ret_num=60&version=13.034.21571&device_id={self.did}&channel_id={tid}&page_id={pg}&session={self.sid}&os=&conduit_id=&vip=0&auth=&recent_selected_tag=&ad=%5B%7B%22lm%22%3A%225%22%2C%22ai%22%3A%225%22%2C%22fp%22%3A%226%22%2C%22sei%22%3A%22S78ff51b694677e17af4b19368dadb7bd%22%2C%22position%22%3A%22library%22%7D%5D&adExt=%7B%22r%22%3A%221.2.1-ares6-pure%22%7D&dfp=a00b3c577e541c41149be7cde9320500b0a11307e61a8445448f7f4a9e895ced0f&filter={quote(json.dumps(new_data))}"
         data=self.fetch(f'{self.hhost}{path}', headers=self.headers).json()
         self.sid = data['session']
         videos = []
