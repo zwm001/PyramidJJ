@@ -23,15 +23,14 @@ class Spider(Spider):
             "": "",
             "ext": {
                 "site": "https://missav.ai",
-                "cfproxy": "",
-                "m3proxy": ""
+                "cfproxy": ""
             }
         }
         自备:过cf代理如https://xx.vvvv.cc/proxy?url=
         '''
         try:
             ext=json.loads(extend)
-            self.host,self.pcf,self.m3p,self.phost=ext.get('site',''),ext.get('cfproxy',''),ext.get('m3proxy',''),''
+            self.host,self.pcf,self.phost=ext.get('site',''),ext.get('cfproxy',''),''
             if self.pcf:
                 parsed_url=urlparse(self.pcf)
                 self.phost=parsed_url.scheme + "://" + parsed_url.netloc
@@ -166,8 +165,6 @@ class Spider(Spider):
                 p,id=0,urls.split('#')[0].split('$')[-1]
             except:
                 p=1
-        if '.m3u8' in id:
-            id=f"{self.m3p}{id}"
         return {'parse': p, 'url': id, 'header': self.headers}
 
     def localProxy(self, param):
