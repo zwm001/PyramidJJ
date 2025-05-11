@@ -71,7 +71,17 @@ class Spider(Spider):
         params={'state':extend.get('state',tid) or tid,'class':extend.get('classes','全部'),'area':extend.get('area','全部'),'year':extend.get('year','全部'),'lang':extend.get('lang','全部'),'version':extend.get('version','全部'),'pg':pg}
         data=self.fetch(f"{self.host}/api.php/vod/list", params=params, headers=self.headers).json()
         result = {}
-        result['list'] = data['data']['list'][:-1]
+        videos = []
+        for i in data['data']['list']:
+            if str(i.get('vod_id', 0)) != '0':
+                videos.append({
+                    'vod_id': i.get('vod_id'),
+                    'vod_name': i.get('vod_name'),
+                    'vod_pic': i.get('vod_pic'),
+                    'vod_year': f"{i.get('vod_score')}分",
+                    'vod_remarks': i.get('vod_remarks')
+                })
+        result['list'] = videos
         result['page'] = pg
         result['pagecount'] = 9999
         result['limit'] = 90
