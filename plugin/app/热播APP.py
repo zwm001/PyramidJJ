@@ -90,7 +90,7 @@ class Spider(Spider):
             'vod_remarks': v.get('vod_remarks'),
             'vod_actor': v.get('vod_actor'),
             'vod_director': v.get('vod_director'),
-            'vod_content': pq(pq(v.get('vod_content')).text()).text()
+            'vod_content': pq(pq(v.get('vod_content','无') or '无').text()).text()
         }
         n,p=[],[]
         for o,i in enumerate(v['vod_play_list']):
