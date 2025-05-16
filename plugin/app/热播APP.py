@@ -6,6 +6,7 @@ import time
 import requests
 from base64 import b64decode, b64encode
 from Crypto.Hash import MD5
+from pyquery import PyQuery as pq
 sys.path.append('..')
 from base.spider import Spider
 
@@ -89,7 +90,7 @@ class Spider(Spider):
             'vod_remarks': v.get('vod_remarks'),
             'vod_actor': v.get('vod_actor'),
             'vod_director': v.get('vod_director'),
-            'vod_content': self.removeHtmlTags(v.get('vod_content'))
+            'vod_content': pq(pq(v.get('vod_content')).text()).text()
         }
         n,p=[],[]
         for o,i in enumerate(v['vod_play_list']):
